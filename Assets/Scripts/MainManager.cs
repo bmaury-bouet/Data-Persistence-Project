@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text BestScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
@@ -21,6 +23,8 @@ public class MainManager : MonoBehaviour
 
     void Start()
     {
+        BestScoreText.text = $"Best Score: {GlobalManager.Instance.BestPlayerName}: {GlobalManager.Instance.BestScore}";
+        AddPoint(0);
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -64,11 +68,12 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        ScoreText.text = $"Player: {GlobalManager.Instance.PlayerName} | Score: {m_Points} (Best: {GlobalManager.Instance.PlayerBestScore})";
     }
 
     public void GameOver()
     {
+        GlobalManager.Instance.SaveSettings(GlobalManager.Instance.PlayerName, m_Points);
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
